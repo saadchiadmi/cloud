@@ -13,7 +13,9 @@ import java.util.stream.Stream;
 
 import org.springframework.web.client.RestTemplate;
 
+import com.example.cloud.entities.Book;
 import com.example.cloud.entities.Index;
+import com.example.cloud.repository.BookRepository;
 import com.example.cloud.repository.IndexRepository;
 
 public class UtilIndex {
@@ -31,20 +33,22 @@ public class UtilIndex {
 		return null;
 	}
 	
-	private static void createFileIndex(String path, IndexRepository indexRepository) {
+	private static void createFileIndex(String path, BookRepository bookRepository) {
+		Book book = new Book(path);
 		createMapIndex(path).entrySet().stream()
 	     .forEach(entry -> {
-	    	 Index index = new Index(entry.getKey(), path, entry.getValue());
-	    	 indexRepository.save(index);
+	    	 Index index = new Index(entry.getKey(), entry.getValue());
+	    	 book.index.add(index);
+	    	 
 	     });
-		
+		bookRepository.save(book);
 	}
 	
-	public static void createFileIndexOfDirectory(String directory, IndexRepository indexRepository) {
+	public static void createFileIndexOfDirectory(String directory, BookRepository bookRepository) {
 		try(Stream<Path> files = Files.walk(Paths.get(directory))){
 			files.filter(Files::isRegularFile)
 			.map(f -> f.getFileName().toString())
-			.forEach(f -> createFileIndex(f, indexRepository));
+			.forEach(f -> createFileIndex(f, bookRepository));
 		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
