@@ -14,38 +14,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cloud.entities.Book;
-import com.example.cloud.services.FirebaseService;
+import com.example.cloud.repository.BookRepository;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200")
 public class BookController {
 	
 	@Autowired
-	FirebaseService firebaseService;
+	BookRepository bookRepository;
 	
 	@GetMapping("/books")
 	public List<Book> getAllBooks() throws InterruptedException, ExecutionException {
-		return firebaseService.getBooks();
+		return bookRepository.findAll();
 	}
 	
 	@GetMapping("/books/{name}")
 	public Book getBooksByName(@PathVariable String name) throws InterruptedException, ExecutionException {
-		return firebaseService.getBookByName(name);
+		return bookRepository.findById(name).orElse(null);
 	}
 	
 	@PostMapping("/books")
 	public Book createBook(@RequestBody Book book) throws InterruptedException, ExecutionException {
-		return firebaseService.createBook(book);
+		return bookRepository.save(book);
 	}
 	
 	@PutMapping("/books")
 	public Book updateBook(@RequestBody Book book) {
-		return book;
+		return updateBook(book);
 	}
 	
 	@DeleteMapping("/books/{name}")
 	public Book deleteBook(@PathVariable String name) throws InterruptedException, ExecutionException {
-		return firebaseService.deleteUser(name);
+		Book result = getBooksByName(name);
+		bookRepository.deleteById(name);
+		return result;
 	}
 
 }

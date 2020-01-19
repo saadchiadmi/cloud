@@ -65,7 +65,7 @@ export class AdminComponent implements OnInit {
             labels: ['Indexing','Jaccard','Closeness'],
             datasets: [
                 {
-                    data: [300, 50, 100],
+                    data: [150, 50, 100],
                     backgroundColor: [
                         "#1E88E5",
                         "#FFCE56",
