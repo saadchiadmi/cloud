@@ -1,0 +1,38 @@
+<p-toast></p-toast>
+<div class="card shadow-sm">
+    <div class="card-title text-center"><h5 class="text-secondary">Add a book</h5></div>
+    <div class="card-body text-center" >
+        <p-fileUpload name="myfile[]" (onSelect)="onUpload($event)"
+                (onRemove)="clear($event)" (onClear)="clearAll()" multiple="multiple" accept=".txt" maxFileSize="1000000">
+            <!-- <ng-template pTemplate="content">
+                <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                </ul>
+            </ng-template> -->
+        </p-fileUpload>
+    </div>
+</div>
+<br>
+<div class="text-center">
+    <button type="button" (click)="confirm()" class="btn btn-info">Restart the calculations</button>
+</div>
+<br>
+<div class="row">
+    <div class="col">
+        <div class="card shadow-sm">
+            <div class="card-body text-center" >
+                <p-chart type="pie" [data]="data"></p-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card shadow-sm">
+            <div class="card-body text-center" >
+                <p-chart type="polarArea" [data]="dataBar"></p-chart>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" appendTo="body"></p-confirmDialog>

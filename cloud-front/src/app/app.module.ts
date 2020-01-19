@@ -21,15 +21,26 @@ import {DialogModule} from 'primeng/dialog';
 import {PanelModule} from 'primeng/panel';
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonModule} from 'primeng/button';
+import { AdminComponent } from './admin/admin.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import {ToastModule} from 'primeng/toast';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ChartModule} from 'primeng/chart';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     MainNavComponent,
-    BooksComponent
+    BooksComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
+    ChartModule,
+    ConfirmDialogModule,
+    ToastModule,
+    FileUploadModule,
     DropdownModule,
     FormsModule,
     DialogModule,

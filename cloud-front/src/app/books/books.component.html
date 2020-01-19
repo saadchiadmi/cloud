@@ -18,8 +18,7 @@
     </p-header>
     <ng-template let-book pTemplate="gridItem">
         <div style="padding:.5em" class="ui-g-12 ui-md-3">
-            <p-panel [header]="book.vin" [style]="{'text-align':'center'}">
-                <!-- <img src="assets/showcase/images/demo/book/{{book.brand}}.png" width="60"> -->
+            <p-panel [header]="book.name" [style]="{'text-align':'center'}">
                 <div class="book-detail">{{book.name}} - {{book.name}}</div>
                 <hr class="ui-widget-content" style="border-top:0">
                 <button pButton type="button" icon="pi pi-search" (click)="selectbook($event, book)"
@@ -32,9 +31,6 @@
 <p-dialog header="book Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
     [style]="{width: '225px'}" (onAfterHide)="onDialogHide()">
     <div class="ui-g" *ngIf="selectedbook">
-        <!-- <div class="ui-g-12" style="text-align:center">
-            <img src="assets/showcase/images/demo/book/{{selectedbook.brand}}.png">
-        </div> -->
         <div class="ui-g-4">Name: </div>
         <div class="ui-g-8">{{selectedbook.name}}</div>
 
