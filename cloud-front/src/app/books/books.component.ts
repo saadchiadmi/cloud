@@ -53,4 +53,8 @@ export class BooksComponent implements OnInit {
       this.selectedBook = null;
   }
 
+  search(word){
+    this.bookService.getBookByName(word).subscribe(res => this.books = res);
+  }
+
 }

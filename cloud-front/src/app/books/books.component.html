@@ -1,4 +1,4 @@
-<p-dataView #dv [value]="books" [paginator]="true" [rows]="20" paginatorPosition="both" filterBy="name"
+<p-dataView #dv [value]="books" [paginator]="true" [rows]="20" paginatorPosition="both"
     [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
     <p-header>
         <div class="ui-helper-clearfix">
@@ -9,8 +9,8 @@
                 </div>
                 <div class="ui-g-6 ui-md-4 filter-container">
                     <div style="position:relative">
-                        <input type="search" pInputText placeholder="Search by name"
-                            (input)="dv.filter($event.target.value)">
+                        <input type="search" pInputText placeholder="Search"
+                            (input)="search($event.target.value)">
                     </div>
                 </div>
             </div>

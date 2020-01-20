@@ -22,7 +22,7 @@ export class BookService {
     //return this.book;
   }
 
-  getBookByName(book : string): Observable< Book>{
-      return this.book[0];
+  getBookByName(book : string): Observable< Book[]>{
+    return this.http.get<Book[]>(this.URI+"/books/"+book);
   }
 }

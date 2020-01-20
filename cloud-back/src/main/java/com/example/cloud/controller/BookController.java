@@ -1,6 +1,9 @@
 package com.example.cloud.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cloud.entities.Book;
+import com.example.cloud.entities.Index;
+import com.example.cloud.entities.Util;
 import com.example.cloud.repository.BookRepository;
 
 @RestController
@@ -27,8 +32,8 @@ public class BookController {
 	}
 	
 	@GetMapping("/books/{name}")
-	public Book getBooksByName(@PathVariable String name) {
-		return bookRepository.findById(name).orElse(null);
+	public List<Book> getBooksByName(@PathVariable String name) {
+		return bookRepository.findByIndex(name).stream().map(b-> new Util(b.getName(), b.getIndex().get(0).getOccurence())).sorted(Comparator.comparingLong(Util::getOcc).reversed()).map(u -> new Book(u.getName())).collect(Collectors.toList());
 	}
 	
 	@PostMapping("/books")
@@ -38,7 +43,7 @@ public class BookController {
 	
 	@DeleteMapping("/books/{name}")
 	public Book deleteBook(@PathVariable String name) {
-		Book result = getBooksByName(name);
+		Book result = getBooksByName(name).get(0);
 		bookRepository.deleteById(name);
 		return result;
 	}
