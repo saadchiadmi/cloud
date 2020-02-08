@@ -46,7 +46,13 @@
 @media only screen and (max-width: 425px){
   .logo, .logo-menu{
     display: block;
-    width: 250px;
+    width: 200px;
     height: 40px;
+  }
+  .logo{
+    padding-left: 60px;
+  }
+  .logo-menu{
+    padding-left: 20px;
   }
 } 

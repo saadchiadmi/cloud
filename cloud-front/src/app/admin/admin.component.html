@@ -1,14 +1,10 @@
 <p-toast></p-toast>
+<div [ngBusy]="busy"></div>
 <div class="card shadow-sm">
     <div class="card-title text-center"><h5 class="text-secondary">Add a book</h5></div>
     <div class="card-body text-center" >
-        <p-fileUpload name="myfile[]" (onSelect)="onUpload($event)"
+        <p-fileUpload name="myfile[]" (onSelect)="onSelect($event)" (onUpload)="onUpload()"
                 (onRemove)="clear($event)" (onClear)="clearAll()" multiple="multiple" accept=".txt" maxFileSize="1000000">
-            <!-- <ng-template pTemplate="content">
-                <ul *ngIf="uploadedFiles.length">
-                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
-                </ul>
-            </ng-template> -->
         </p-fileUpload>
     </div>
 </div>

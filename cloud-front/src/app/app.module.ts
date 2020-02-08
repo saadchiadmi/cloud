@@ -26,6 +26,8 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {ToastModule} from 'primeng/toast';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ChartModule} from 'primeng/chart';
+import {RadioButtonModule} from 'primeng/radiobutton';
+import {NgBusyModule} from 'ng-busy';
 
 
 @NgModule({
@@ -38,6 +40,8 @@ import {ChartModule} from 'primeng/chart';
   imports: [
     BrowserModule,
     ChartModule,
+    NgBusyModule,
+    RadioButtonModule,
     ConfirmDialogModule,
     ToastModule,
     FileUploadModule,

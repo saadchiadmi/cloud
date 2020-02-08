@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BookService } from '../services/book.service';
 import { Book } from '../entities/Book';
 import { SelectItem } from 'primeng/api/selectitem';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-books',
@@ -11,50 +12,62 @@ import { SelectItem } from 'primeng/api/selectitem';
 export class BooksComponent implements OnInit {
 
   books : Book[];
-
   selectedBook: Book;
-
   displayDialog: boolean;
-
   sortOptions: SelectItem[];
-
   sortKey: string;
-
-  sortField: string;
-
-  sortOrder: number;
+  searchInput: string = "";
+  selected: string = 'normal';
+  sortField: string = "occurence";
+  busy: Subscription;
 
   constructor(private bookService : BookService) { }
 
   ngOnInit() {
-    this.bookService.getBooks().subscribe(res => this.books=res);
+    this.busy = this.bookService.getBooks().subscribe(res => this.books=res);
+    this.sortOptions = [
+      {label: 'Occurence', value: 'occurence'},
+      {label: 'Suggestion', value: 'suggestion'},
+  ];
   }
 
-    selectbook(event: Event, book: Book) {
-      this.selectedBook = book;
-      this.displayDialog = true;
-      event.preventDefault();
+  selectbook(event: Event, book: Book) {
+    console.log(book);
+    this.selectedBook = book;
+    this.displayDialog = true;
+    event.preventDefault();
   }
 
   onSortChange(event) {
       let value = event.value;
+      this.search(this.searchInput);
+  }
 
-      if (value.indexOf('!') === 0) {
-          this.sortOrder = -1;
-          this.sortField = value.substring(1, value.length);
-      }
-      else {
-          this.sortOrder = 1;
-          this.sortField = value;
-      }
+  onRadioChange(){
+    this.search(this.searchInput);
   }
 
   onDialogHide() {
       this.selectedBook = null;
   }
 
-  search(word){
-    this.bookService.getBookByName(word).subscribe(res => this.books = res);
+  search(word:string){
+    if(this.sortField=="occurence"){
+      if(this.selected=="normal" || word==""){
+        this.busy = this.bookService.getBookByName(word.toLowerCase()).subscribe(res => this.books = res);
+      }
+      else if(this.selected=="regex"){
+        this.busy = this.bookService.getBookRegexByName(word.toLowerCase()).subscribe(res => this.books = res);
+      }
+    }
+    else if(this.sortField=="suggestion"){
+      if(this.selected=="normal" || word==""){
+        this.busy = this.bookService.getBooksSuggestionByName(word.toLowerCase()).subscribe(res => this.books = res);
+      }
+      else if(this.selected=="regex"){
+        this.busy = this.bookService.getBooksRegexSuggestionByName(word.toLowerCase()).subscribe(res => this.books = res);
+      }
+    }
   }
 
 }

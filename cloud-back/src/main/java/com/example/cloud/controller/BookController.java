@@ -1,6 +1,6 @@
 package com.example.cloud.controller;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cloud.entities.Book;
-import com.example.cloud.entities.Index;
+import com.example.cloud.entities.Closeness;
+import com.example.cloud.entities.Graphe;
+import com.example.cloud.entities.Suggestion;
 import com.example.cloud.entities.Util;
 import com.example.cloud.repository.BookRepository;
+import com.example.cloud.repository.ClosenessRepository;
+import com.example.cloud.repository.GrapheRepository;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200")
@@ -26,14 +30,63 @@ public class BookController {
 	@Autowired
 	BookRepository bookRepository;
 	
+	@Autowired
+	ClosenessRepository closenessRepository;
+	
+	@Autowired
+	GrapheRepository grapheRepository;
+	
 	@GetMapping("/books")
 	public List<Book> getAllBooks() {
-		return bookRepository.findAll();
+		return bookRepository.findAll().stream().map(b->new Book(b.getName())).collect(Collectors.toList());
 	}
 	
 	@GetMapping("/books/{name}")
 	public List<Book> getBooksByName(@PathVariable String name) {
-		return bookRepository.findByIndex(name).stream().map(b-> new Util(b.getName(), b.getIndex().get(0).getOccurence())).sorted(Comparator.comparingLong(Util::getOcc).reversed()).map(u -> new Book(u.getName())).collect(Collectors.toList());
+		return bookRepository.findByIndex(name).stream().map(b-> new Util(b.getName(), b.getIndex().get(0).getOccurence())).sorted(Comparator.comparingDouble(Util::getOcc).reversed()).map(u -> new Book(u.getName())).collect(Collectors.toList());
+	}
+	
+	@GetMapping("/books/{name}/regex")
+	public List<Book> getBooksRegexByName(@PathVariable String name) {
+		if(Util.isRegex(name)) {
+			return bookRepository.findRegexByIndex(name).stream().map(b-> new Util(b.getName(), b.getIndex().get(0).getOccurence())).sorted(Comparator.comparingDouble(Util::getOcc).reversed()).map(u -> new Book(u.getName())).collect(Collectors.toList());
+		}else {
+			return null;
+		}
+	}
+	
+	@GetMapping("/books/{name}/suggestion")
+	public List<Book> getBooksSuggestionByName(@PathVariable String name) {
+		List<Closeness> closenesses = closenessRepository.findAll();
+		List<Graphe> graphe = grapheRepository.findAll();
+		return this.getBooksByName(name).stream().limit(3).map(b ->{
+					List<Suggestion> suggestions = new ArrayList<>();
+					closenesses.forEach(c -> suggestions.add(new Suggestion(b.getName(), c.getBook(), c.getCloseness())));
+					return suggestions;
+				}).flatMap(suggestions -> suggestions.stream().filter(s -> Graphe.checkIsNeighbours(s.getBook1(), s.getBook2(), graphe))
+															.sorted(Comparator.comparingDouble(Suggestion::getCloseness)))
+					.filter(Util.distinctByKey(Suggestion::getBook2))
+					.map(b-> new Util(b.getBook2(), b.getCloseness()))
+					.map(u -> new Book(u.getName())).collect(Collectors.toList());
+
+	}
+	
+	@GetMapping("/books/{name}/regex/suggestion")
+	public List<Book> getBooksRegexSuggestionByName(@PathVariable String name) {
+		if(Util.isRegex(name)) {
+			List<Closeness> closenesses = closenessRepository.findAll();
+			List<Graphe> graphe = grapheRepository.findAll();
+			return this.getBooksRegexByName(name).stream().limit(3).map(b ->{
+						List<Suggestion> suggestions = new ArrayList<>();
+						closenesses.forEach(c -> suggestions.add(new Suggestion(b.getName(), c.getBook(), c.getCloseness())));
+						return suggestions;
+					}).flatMap(suggestions -> suggestions.stream().filter(s -> Graphe.checkIsNeighbours(s.getBook1(), s.getBook2(), graphe))
+													.sorted(Comparator.comparingDouble(Suggestion::getCloseness)))
+						.filter(Util.distinctByKey(Suggestion::getBook2))
+						.map(b-> new Util(b.getBook2(), b.getCloseness()))
+						.map(u -> new Book(u.getName())).collect(Collectors.toList());
+		}
+		else return null;
 	}
 	
 	@PostMapping("/books")

@@ -12,4 +12,7 @@ public interface BookRepository extends MongoRepository<Book, String>{
 	@Query(value = "{'index.word': {$eq :?0}}", fields = "{'name' : 1, 'index' : {$elemMatch : { 'word' : ?0 }}}")
 	public List<Book> findByIndex(String word);
 	
+	@Query(value = "{'index.word': {'$regex': ?0}}", fields = "{'name' : 1, 'index' : {$elemMatch : { 'word' : {'$regex': ?0} }}}")
+	public List<Book> findRegexByIndex(String word);
+	
 }

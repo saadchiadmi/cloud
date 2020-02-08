@@ -9,13 +9,13 @@ public class Closeness {
 	@Id
 	String book;
 	
-	Long closeness;
+	double closeness;
 
 	public Closeness() {
 		super();
 	}
 
-	public Closeness(String book, Long closeness) {
+	public Closeness(String book, double closeness) {
 		super();
 		this.book = book;
 		this.closeness = closeness;
@@ -29,12 +29,17 @@ public class Closeness {
 		this.book = book;
 	}
 
-	public Long getCloseness() {
+	public double getCloseness() {
 		return closeness;
 	}
 
-	public void setCloseness(Long closeness) {
+	public void setCloseness(double closeness) {
 		this.closeness = closeness;
+	}
+	
+	@Override
+	public String toString() {
+		return this.book+" "+closeness;
 	}
 
 }

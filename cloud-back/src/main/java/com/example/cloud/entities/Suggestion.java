@@ -1,17 +1,17 @@
 package com.example.cloud.entities;
 
-public class Jaccard {
-
+public class Suggestion {
+	
 	String book1;
 	
 	String book2;
 	
-	double distance;
+	double closeness;
 
-	public Jaccard(String book1, String book2, double distance) {
+	public Suggestion(String book1, String book2, double closeness) {
 		this.book1 = book1;
 		this.book2 = book2;
-		this.distance = distance;
+		this.closeness = closeness;
 	}
 
 	public String getBook1() {
@@ -30,11 +30,12 @@ public class Jaccard {
 		this.book2 = book2;
 	}
 
-	public double getDistance() {
-		return distance;
+	public double getCloseness() {
+		return closeness;
 	}
 
-	public void setDistance(double distance) {
-		this.distance = distance;
+	public void setCloseness(double closeness) {
+		this.closeness = closeness;
 	}
+
 }

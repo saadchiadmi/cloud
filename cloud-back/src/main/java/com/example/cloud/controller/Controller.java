@@ -7,14 +7,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.cloud.entities.Book;
+import com.example.cloud.entities.Closeness;
+import com.example.cloud.entities.Graphe;
 import com.example.cloud.entities.TimeExecution;
 import com.example.cloud.repository.BookRepository;
 import com.example.cloud.repository.ClosenessRepository;
 import com.example.cloud.repository.IndexRepository;
-import com.example.cloud.repository.JaccardRepository;
-import com.example.cloud.repository.WarshalRepository;
+import com.example.cloud.repository.GrapheRepository;
 import com.example.cloud.util.UtilIndex;
-import com.example.cloud.util.UtilJaccard;
+import com.example.cloud.util.UtilCloseness;
+import com.example.cloud.util.UtilGraphe;
 
 
 @RestController
@@ -28,10 +31,7 @@ public class Controller {
 	IndexRepository indexRepository;
 	
 	@Autowired
-	JaccardRepository jaccardRepository;
-	
-	@Autowired
-	WarshalRepository warshalRepository;
+	GrapheRepository grapheRepository;
 	
 	@Autowired
 	ClosenessRepository closenessRepository;
@@ -41,14 +41,23 @@ public class Controller {
 	@GetMapping("/start")
 	public TimeExecution getTimeExecution() {
 		TimeExecution timeExecution = new TimeExecution();
+		grapheRepository.deleteAll();
+		closenessRepository.deleteAll();
 		
 		long start = System.currentTimeMillis();
-		UtilIndex.createFileIndexOfDirectory(Docs, bookRepository);
+		List<Book> books = UtilIndex.createFileIndexOfDirectory(Docs);
+		bookRepository.saveAll(books);
 		timeExecution.setIndex(System.currentTimeMillis() - start);
 		
 		start = System.currentTimeMillis();
-		//UtilJaccard.computeJaccard(bookRepository.findAll(), bookRepository);
-		timeExecution.setJaccard(System.currentTimeMillis() - start);
+		List<Graphe> graphe = UtilGraphe.computeJaccard(bookRepository.findAll());
+		grapheRepository.saveAll(graphe);
+		timeExecution.setGraphe(System.currentTimeMillis() - start);
+		
+		start = System.currentTimeMillis();
+		List<Closeness> closenesses = UtilCloseness.computeClosenessFiles(grapheRepository.findAll());
+		closenessRepository.saveAll(closenesses);
+		timeExecution.setCloseness(System.currentTimeMillis() - start);
 		return timeExecution;
 	}
 	

@@ -1,17 +1,26 @@
+<div [ngBusy]="busy"></div>
 <p-dataView #dv [value]="books" [paginator]="true" [rows]="20" paginatorPosition="both"
-    [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+    [sortField]="sortField" layout="grid">
     <p-header>
         <div class="ui-helper-clearfix">
             <div class="ui-g">
                 <div class="ui-g-12 ui-md-4">
-                    <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By"
+                    <p-dropdown [options]="sortOptions" [(ngModel)]="sortField" placeholder="Sort By"
                         (onChange)="onSortChange($event)" [style]="{'min-width':'140px'}"></p-dropdown>
                 </div>
                 <div class="ui-g-6 ui-md-4 filter-container">
                     <div style="position:relative">
-                        <input type="search" pInputText placeholder="Search"
+                        <input type="search" pInputText [(ngModel)]="searchInput" placeholder="Search"
                             (input)="search($event.target.value)">
                     </div>
+                </div>
+            </div><br>
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <p-radioButton (onClick)="onRadioChange()" name="group" value="normal" label="Basic Research" [(ngModel)]="selected" inputId="preopt"></p-radioButton>
+                </div>
+                <div class="col-4">
+                    <p-radioButton (onClick)="onRadioChange()" name="group" value="regex" label="Regex Research" [(ngModel)]="selected" inputId="preopt"></p-radioButton>
                 </div>
             </div>
         </div>
@@ -28,13 +37,13 @@
     </ng-template>
 </p-dataView>
 
-<p-dialog header="book Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
+<p-dialog header="book Details" appendTo="body" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true"
     [style]="{width: '225px'}" (onAfterHide)="onDialogHide()">
-    <div class="ui-g" *ngIf="selectedbook">
+    <div class="ui-g" *ngIf="selectedBook">
         <div class="ui-g-4">Name: </div>
-        <div class="ui-g-8">{{selectedbook.name}}</div>
+        <div class="ui-g-8">{{selectedBook.name}}</div>
 
-        <div class="ui-g-4">Author: </div>
-        <div class="ui-g-8">{{selectedbook.name}}</div>
+        <div class="ui-g-4">Name: </div>
+        <div class="ui-g-8">{{selectedBook.name}}</div>
     </div>
 </p-dialog>
