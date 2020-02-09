@@ -17,12 +17,24 @@ export class BookService {
     return this.http.get<Book[]>(this.URI+"/books");
   }
 
+  getBooksCloseness(): Observable< Book[]> {
+    return this.http.get<Book[]>(this.URI+"/books/closeness");
+  }
+
   getBookByName(book : string): Observable< Book[]>{
     return this.http.get<Book[]>(this.URI+"/books/"+book);
   }
 
   getBookRegexByName(book : string): Observable< Book[]>{
     return this.http.get<Book[]>(this.URI+"/books/"+book+"/regex");
+  }
+
+  getBooksClosenessByName(book : string): Observable< Book[]>{
+    return this.http.get<Book[]>(this.URI+"/books/"+book+"/closeness");
+  }
+
+  getBooksRegexClosenessByName(book : string): Observable< Book[]>{
+    return this.http.get<Book[]>(this.URI+"/books/"+book+"/regex/closeness");
   }
 
   getBooksSuggestionByName(book : string): Observable< Book[]>{

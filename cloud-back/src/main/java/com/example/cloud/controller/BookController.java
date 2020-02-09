@@ -41,9 +41,36 @@ public class BookController {
 		return bookRepository.findAll().stream().map(b->new Book(b.getName())).collect(Collectors.toList());
 	}
 	
+	@GetMapping("/books/closeness")
+	public List<Book> getAllBooksByCloseness() {
+		List<Closeness> closenesses = closenessRepository.findAll();
+		return bookRepository.findAll().stream().map(b-> new Util(b.getName(), closenesses.stream().filter(c -> c.getBook().equals(b.getName())).map(c->c.getCloseness()).findFirst().orElse(-1.0)))
+				.filter(u -> u.getOcc()>0)
+				.sorted(Comparator.comparingDouble(Util::getOcc).reversed())
+				.map(u -> new Book(u.getName())).collect(Collectors.toList());
+	}
+	
 	@GetMapping("/books/{name}")
 	public List<Book> getBooksByName(@PathVariable String name) {
 		return bookRepository.findByIndex(name).stream().map(b-> new Util(b.getName(), b.getIndex().get(0).getOccurence())).sorted(Comparator.comparingDouble(Util::getOcc).reversed()).map(u -> new Book(u.getName())).collect(Collectors.toList());
+	}
+	
+	@GetMapping("/books/{name}/closeness")
+	public List<Book> getBooksClosenessByName(@PathVariable String name) {
+		List<Closeness> closenesses = closenessRepository.findAll();
+		return bookRepository.findByIndex(name).stream().map(b-> new Util(b.getName(), closenesses.stream().filter(c -> c.getBook().equals(b.getName())).map(c->c.getCloseness()).findFirst().orElse(-1.0)))
+				.filter(u -> u.getOcc()>0)
+				.sorted(Comparator.comparingDouble(Util::getOcc).reversed())
+				.map(u -> new Book(u.getName())).collect(Collectors.toList());
+	}
+	
+	@GetMapping("/books/{name}/regex/closeness")
+	public List<Book> getBooksClosenessRegexByName(@PathVariable String name) {
+		List<Closeness> closenesses = closenessRepository.findAll();
+		return bookRepository.findRegexByIndex(name).stream().map(b-> new Util(b.getName(), closenesses.stream().filter(c -> c.getBook().equals(b.getName())).map(c->c.getCloseness()).findFirst().orElse(-1.0)))
+				.filter(u -> u.getOcc()>0)
+				.sorted(Comparator.comparingDouble(Util::getOcc).reversed())
+				.map(u -> new Book(u.getName())).collect(Collectors.toList());
 	}
 	
 	@GetMapping("/books/{name}/regex")

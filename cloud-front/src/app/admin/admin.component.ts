@@ -33,11 +33,11 @@ export class AdminComponent implements OnInit {
     this.messageService.add({severity: 'info', summary: 'Add', detail:'File Selected'});
   }
 
-  onUpload() {
+  onUpload(event) {
     for(let file of this.uploadedFiles) {
       this.messageService.add({severity: 'info', summary: 'Uploud', detail:'File Selected'+file.name});
     }
-    
+    this.uploadedFiles = [];
   }
 
   clear(event) {

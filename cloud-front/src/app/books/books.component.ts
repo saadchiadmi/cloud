@@ -27,6 +27,7 @@ export class BooksComponent implements OnInit {
     this.busy = this.bookService.getBooks().subscribe(res => this.books=res);
     this.sortOptions = [
       {label: 'Occurence', value: 'occurence'},
+      {label: 'Closeness', value: 'closeness'},
       {label: 'Suggestion', value: 'suggestion'},
   ];
   }
@@ -53,15 +54,32 @@ export class BooksComponent implements OnInit {
 
   search(word:string){
     if(this.sortField=="occurence"){
-      if(this.selected=="normal" || word==""){
+      if(word==""){
+        this.busy = this.bookService.getBooks().subscribe(res => this.books = res);
+      }
+      else if(this.selected=="normal"){
         this.busy = this.bookService.getBookByName(word.toLowerCase()).subscribe(res => this.books = res);
       }
       else if(this.selected=="regex"){
         this.busy = this.bookService.getBookRegexByName(word.toLowerCase()).subscribe(res => this.books = res);
       }
     }
+    else if(this.sortField=="closeness"){
+      if(word==""){
+        this.busy = this.bookService.getBooksCloseness().subscribe(res => this.books = res);
+      }
+      else if(this.selected=="normal"){
+        this.busy = this.bookService.getBooksClosenessByName(word.toLowerCase()).subscribe(res => this.books = res);
+      }
+      else if(this.selected=="regex"){
+        this.busy = this.bookService.getBooksRegexClosenessByName(word.toLowerCase()).subscribe(res => this.books = res);
+      }
+    }
     else if(this.sortField=="suggestion"){
-      if(this.selected=="normal" || word==""){
+      if(word==""){
+        this.busy = this.bookService.getBooks().subscribe(res => this.books = res);
+      }
+      else if(this.selected=="normal"){
         this.busy = this.bookService.getBooksSuggestionByName(word.toLowerCase()).subscribe(res => this.books = res);
       }
       else if(this.selected=="regex"){

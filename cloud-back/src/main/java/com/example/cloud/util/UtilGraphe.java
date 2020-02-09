@@ -8,31 +8,38 @@ import java.util.stream.Collectors;
 import com.example.cloud.entities.Book;
 import com.example.cloud.entities.Graphe;
 import com.example.cloud.entities.Jaccard;
+import com.example.cloud.repository.GrapheRepository;
 
 public class UtilGraphe {
 	
-	private static List<Graphe> graphe = null;
+	private static GrapheRepository grapheRepository;
+	private static Map<String,Long> map1;
+	private static Map<String,Long> map2;
 	private static List<Jaccard> jaccard;
 	private static List<Book> allBooks;
 	private static double[][] dist = null;
 	private static double edgeThreshold = 0.6;
-
-	public static List<Graphe> getGraphe() {
-		if(graphe == null) {
-			throw new ExceptionInInitializerError("You must call computeJaccard first");
-		}else {
-			return graphe;
-		}
+	private static int a=0;
+	
+	public static void computeJaccard(List<Book> books, GrapheRepository grapheRepository) {
+		allBooks = books;
+		UtilGraphe.grapheRepository = grapheRepository;
+		jaccard = new ArrayList<Jaccard>();
+		System.out.println("start computing jaccard");
+		a=0;
+		books.stream()
+			.forEach(f -> {
+				System.out.print("book "+add()+" ");
+				computeJaccardBook(f);
+				System.out.println();
+			});
+		System.out.println("start Warshall");
+		calculShortestPathsAndDistance();
 	}
 	
-	public static List<Graphe> computeJaccard(List<Book> books) {
-		allBooks = books;
-		graphe = new ArrayList<Graphe>();
-		jaccard = new ArrayList<Jaccard>();
-		books.stream()
-			.forEach(f -> computeJaccardBook(f));
-		calculShortestPathsAndDistance();
-		return graphe;
+	public static String add() {
+		a++;
+		return ""+a;
 	}
 	
 	private static void computeJaccardBook(Book book){
@@ -42,9 +49,9 @@ public class UtilGraphe {
 	}
 	
 	private static void distanceJaccard(Book f1, Book f2) {
-		Map<String,Long> map1 = allBooks.stream().filter(b -> b.getName().equals(f1.getName())).flatMap(b -> b.getIndex().stream())
+		map1 = allBooks.stream().filter(b -> b.getName().equals(f1.getName())).flatMap(b -> b.getIndex().stream())
 				.collect(Collectors.toMap(a -> a.getWord(), a -> a.getOccurence()));
-		Map<String,Long> map2 = allBooks.stream().filter(b -> b.getName().equals(f2.getName())).flatMap(b -> b.getIndex().stream())
+		map2 = allBooks.stream().filter(b -> b.getName().equals(f2.getName())).flatMap(b -> b.getIndex().stream())
 				.collect(Collectors.toMap(a -> a.getWord(), a -> a.getOccurence()));
 		map1.keySet().retainAll(map2.keySet());
 		map2.keySet().retainAll(map1.keySet());
@@ -102,7 +109,7 @@ public class UtilGraphe {
 		for (int i = 0; i < dist.length; i++) {
 			for (int j = i+1; j < dist.length; j++) {
 				Graphe res = new Graphe(books.get(i), books.get(j), distance(books.get(i),books.get(j)), dist[i][j]);
-				graphe.add(res);
+				grapheRepository.save(res);
 			}
 		}
 	}
