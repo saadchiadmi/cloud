@@ -79,7 +79,9 @@ public class UtilGraphe {
 	public static void calculShortestPathsAndDistance() {
 		List<String> books = jaccard.stream().map(p->p.getBook1()).distinct().collect(Collectors.toList());
 		dist = new double[books.size()][books.size()];
+		System.out.println("inizialize dist");
 	    for (int i=0;i<dist.length;i++) {
+	    	System.out.println("book "+i);
 	      for (int j=0;j<dist.length;j++) {
 	        if (i==j) {dist[i][i]=0; continue;}
         	dist[i][j]=distance(books.get(i),books.get(j));
@@ -87,6 +89,7 @@ public class UtilGraphe {
 	    }
 	    
 	    for (int k=0;k<dist.length;k++) {
+	    	System.out.println("book "+k);
 	      for (int i=0;i<dist.length;i++) {
 	        for (int j=0;j<dist.length;j++) {
 	          if (dist[i][j]>dist[i][k] + dist[k][j]){
@@ -95,6 +98,7 @@ public class UtilGraphe {
 	        }
 	      }
 	    }
+	    System.out.println("start set");
 	    setNeighboursAndShorDictanse();
 	}
 	
@@ -107,6 +111,7 @@ public class UtilGraphe {
 		assert dist == null : "You must call computeJaccard and calculShortestPathsAndDistance first";
 		List<String> books = jaccard.stream().map(p->p.getBook1()).distinct().collect(Collectors.toList());
 		for (int i = 0; i < dist.length; i++) {
+			System.out.println("book "+i);
 			for (int j = i+1; j < dist.length; j++) {
 				Graphe res = new Graphe(books.get(i), books.get(j), distance(books.get(i),books.get(j)), dist[i][j]);
 				grapheRepository.save(res);

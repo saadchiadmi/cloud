@@ -23,7 +23,7 @@ public class UtilIndex {
 		try (Stream<String> lines = Files.lines(Paths.get("docs/"+path))) {
 			return lines.flatMap(l -> Arrays.stream(l.split("[^A-Za-z]+")))
 		     .map(w->w.toLowerCase())
-		     //.filter(w-> w.length()>3)
+		     .filter(w-> w.length()>3)
 		     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

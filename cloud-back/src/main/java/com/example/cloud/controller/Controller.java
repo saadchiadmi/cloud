@@ -35,7 +35,7 @@ public class Controller {
 	@GetMapping("/start")
 	public TimeExecution getTimeExecution() {
 		TimeExecution timeExecution = new TimeExecution();
-		bookRepository.deleteAll();
+		//bookRepository.deleteAll();
 		grapheRepository.deleteAll();
 		closenessRepository.deleteAll();
 		
